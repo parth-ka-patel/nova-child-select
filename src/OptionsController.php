@@ -21,16 +21,20 @@ class OptionsController extends Controller
         return $options;
     }
 
-    public function findFieldByAttribute($field,$attribute){
-        return array_filter($field,function ($field) use ($attribute) {
+    public function findFieldByAttribute($fieldObj,$attribute){
+        foreach ($fieldObj as $field){
             if(gettype($field) == "array" && $field["component"] == "tabs"){
-                array_filter($field["fields"],function ($field) use($attribute){
-                    return isset($field->attribute) && $field->attribute = $attribute;
-                });
+                foreach ($field["fields"] as $value){
+                    if (isset($value->attribute) && $value->attribute == $attribute && $value->component == "child-select"){
+                        return $value;
+                    }
+                }
             }else{
-                return isset($field->attribute) &&
-                    $field->attribute == $attribute;
+                if(isset($field->attribute) &&
+                    $field->attribute == $attribute){
+                    return $field;
+                }
             }
-        });
+        }
     }
 }
